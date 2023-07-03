@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:vapp/home_detaile_page.dart';
 import 'package:vapp/model/catalog.dart';
 import 'package:vapp/util/route.dart';
-import 'package:vapp/widget/drawer.dart';
-import 'package:vapp/widget/item_widget.dart';
+
+
 import 'package:velocity_x/velocity_x.dart';
 
 class Home extends StatelessWidget {
@@ -27,7 +27,7 @@ class Home extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
              HomeHeader(),
-             if(CatalogModel.items!=null && CatalogModel.items.isEmpty)
+             if(CatalogModel.items.isEmpty)
               Center(child: CircularProgressIndicator(),)
               else
               
@@ -85,7 +85,7 @@ class Home extends StatelessWidget {
     
     final Item Catalog;
 
-  const CatalogItem({super.key, required this.Catalog}):assert(Catalog!=null);
+  const CatalogItem({super.key, required this.Catalog});
 
 
   
