@@ -1,7 +1,8 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vapp/home_detaile_page.dart';
+import 'package:vapp/login_page.dart';
 import 'package:vapp/model/catalog.dart';
 import 'package:vapp/util/route.dart';
 import 'package:vapp/widget/drawer.dart';
@@ -13,124 +14,121 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: ()=>Navigator.pushNamed(context, MyRoute.CartRoute)
-      ,child: Icon(CupertinoIcons.cart), 
-    backgroundColor: Colors.black,      
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          var sharedPre = await SharedPreferences.getInstance();
+          var store = sharedPre.clear();
+          sharedPre.remove('username');
+
+          Navigator.push(context, MaterialPageRoute(builder: (c) => Login()));
+        },
+        child: Icon(Icons.logout_sharp),
+        backgroundColor: Colors.black,
       ),
-      
       body: SafeArea(
-          child: Container(
-            padding: Vx.m32,
+        child: Container(
+          padding: Vx.m32,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-             HomeHeader(),
-             if(CatalogModel.items!=null && CatalogModel.items.isEmpty)
-              Center(child: CircularProgressIndicator(),)
+              HomeHeader(),
+              if (CatalogModel.items != null && CatalogModel.items.isEmpty)
+                Center(
+                  child: CircularProgressIndicator(),
+                )
               else
-              
-              CatalogList().expand()
-
+                CatalogList().expand()
             ],
           ),
-          
-          
-          
-
         ),
-      ) ,
+      ),
     );
-
-   }
-  
   }
+}
 
-  class HomeHeader extends StatelessWidget {
-    const HomeHeader({super.key});
-  
-    @override
-    Widget build(BuildContext context) {
-      return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              "catalog App".text.xl5.bold.make(),
-              "Tranding Products".text.xl2.make()
-            ],
-          );
-    }
+class HomeHeader extends StatelessWidget {
+  const HomeHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        "catalog App".text.xl5.bold.make(),
+        "Tranding Products".text.xl2.make()
+      ],
+    );
   }
+}
 
-  class CatalogList extends StatelessWidget {
-    const CatalogList({super.key});
-  
-    @override
-    Widget build(BuildContext context) {
-      return ListView.builder(
+class CatalogList extends StatelessWidget {
+  const CatalogList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
         shrinkWrap: true,
         itemCount: CatalogModel.items.length,
-        itemBuilder:((context, index) {
-            final Catalog = CatalogModel.items[index];
+        itemBuilder: ((context, index) {
+          final Catalog = CatalogModel.items[index];
           return InkWell(
             child: CatalogItem(Catalog: Catalog),
-            onTap: () => Navigator.push(context,
-             MaterialPageRoute(
-              builder: (context)=>HomeDetailPage(Catalog: Catalog))),);
-      }));
-    }
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => HomeDetailPage(Catalog: Catalog))),
+          );
+        }));
   }
+}
 
-  class CatalogItem extends StatelessWidget {
-    
-    final Item Catalog;
+class CatalogItem extends StatelessWidget {
+  final Item Catalog;
 
-  const CatalogItem({super.key, required this.Catalog}):assert(Catalog!=null);
+  const CatalogItem({super.key, required this.Catalog})
+      : assert(Catalog != null);
 
-
-  
-    @override
-    Widget build(BuildContext context) {
-      return VxBox(
+  @override
+  Widget build(BuildContext context) {
+    return VxBox(
         child: Row(
-          children: [
-            
-            Hero(tag: Key(Catalog.id.toString()),
-              child: CatalogImage(image: Catalog.image,)) ,
-            
-            Expanded(child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Catalog.name.text.bold.make(),
-                Catalog.decs.text.make(),
-                ButtonBar(
-                  alignment: MainAxisAlignment.spaceBetween,
-                  
-                  children: [
-                    
-                    
-                    "\$${Catalog.price}".text.bold.xl.make(),
-                    ElevatedButton(onPressed: () {
-                      
-                    }, child: "Add To Card".text.make(),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.black),
-                      shape: MaterialStateProperty.all(StadiumBorder())
-                    ),)
-                  ],
-                ).pOnly(right: 9)
-              ],
+      children: [
+        // Hero(
+        //     tag: Key(Catalog.id.toString()),
+        //     child: CatalogImage(
+        //       image: Catalog.image,
+        //     )),
 
-            ))
+        Expanded(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Catalog.name.text.bold.make(),
+            Catalog.decs.text.make(),
+            ButtonBar(
+              alignment: MainAxisAlignment.spaceBetween,
+              children: [
+                "\$${Catalog.price}".text.bold.xl.make(),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: "Add To Card".text.make(),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.black),
+                      shape: MaterialStateProperty.all(StadiumBorder())),
+                )
+              ],
+            ).pOnly(right: 9)
           ],
-        )
-      ).gray100.rounded.square(150).make().py16();
-    }
+        ))
+      ],
+    )).gray100.rounded.square(150).make().py16();
   }
+}
 
 class CatalogImage extends StatelessWidget {
-   final String image;
+  final String image;
 
   const CatalogImage({super.key, required this.image});
 

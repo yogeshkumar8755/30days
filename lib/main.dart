@@ -1,14 +1,19 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vapp/cart_page.dart';
 import 'package:vapp/login_page.dart';
+import 'package:vapp/sign_up.dart';
+import 'package:vapp/spalesh.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:vapp/util/route.dart';
 
 import 'home.dart';
 
-
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
+  runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -21,19 +26,16 @@ class MyApp extends StatelessWidget {
       title: 'Flutter App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        
         primarySwatch: Colors.blue,
-        
       ),
       // home: const Home(),
-      initialRoute: MyRoute.homeRoute,
+      initialRoute: "/",
 
       routes: {
-        "/":(context) => const Login(),
-          MyRoute.homeRoute:(context) => const Home(),
-          MyRoute.CartRoute:(context) => const CartPage()
+        "/": (context) => const SignUp(),
+        MyRoute.homeRoute: (context) => const Home(),
+        MyRoute.CartRoute: (context) => const CartPage()
       },
     );
   }
 }
-
