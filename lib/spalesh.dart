@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vapp/core/const.dart';
+import 'package:vapp/home.dart';
 
 import 'login_page.dart';
 
@@ -39,16 +41,17 @@ class _SpleshScreanState extends ConsumerState<SpleshScrean> {
 
   void whereToGo() async {
     var sharedPre = await SharedPreferences.getInstance();
-    var storePref = sharedPre.getBool('key');
-    var sto = sharedPre.getString('username');
+    var storePref = sharedPre.getBool(Const.isLogin);
+    var sto = sharedPre.getString(Const.userKey);
 
-    Timer(Duration(seconds: 3), () {
-      if (storePref != null && sto!.isNotEmpty) {
+    Timer(Duration(seconds: 2), () {
+      if (storePref != null && sto != null) {
         if (storePref) {
           if (kDebugMode) {
             print(["$sto loged in"]);
           }
-          Navigator.of(context).pushReplacementNamed('/home');
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => Home(sto)));
         } else {
           if (kDebugMode) {
             print(["plz loged in"]);

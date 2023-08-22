@@ -10,9 +10,9 @@ import 'package:vapp/util/route.dart';
 
 import 'home.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
+  await Firebase.initializeApp();
   runApp(ProviderScope(child: const MyApp()));
 }
 
@@ -32,8 +32,8 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
 
       routes: {
-        "/": (context) => const SignUp(),
-        MyRoute.homeRoute: (context) => const Home(),
+        "/": (context) => SpleshScrean(),
+        // MyRoute.homeRoute: (context) =>  Home(),
         MyRoute.CartRoute: (context) => const CartPage()
       },
     );

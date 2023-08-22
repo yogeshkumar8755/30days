@@ -10,7 +10,8 @@ import 'package:vapp/widget/item_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class Home extends StatelessWidget {
-  const Home({super.key});
+  String id;
+  Home(this.id, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class Home extends StatelessWidget {
         onPressed: () async {
           var sharedPre = await SharedPreferences.getInstance();
           var store = sharedPre.clear();
-          sharedPre.remove('username');
+          sharedPre.remove('userId');
 
           Navigator.push(context, MaterialPageRoute(builder: (c) => Login()));
         },
@@ -32,7 +33,7 @@ class Home extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HomeHeader(),
+              HomeHeader(id),
               if (CatalogModel.items != null && CatalogModel.items.isEmpty)
                 Center(
                   child: CircularProgressIndicator(),
@@ -48,14 +49,15 @@ class Home extends StatelessWidget {
 }
 
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key});
+  String id;
+  HomeHeader(this.id, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        "catalog App".text.xl5.bold.make(),
+        "catalog App $id".text.xl5.bold.make(),
         "Tranding Products".text.xl2.make()
       ],
     );

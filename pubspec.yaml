@@ -41,6 +41,10 @@ dependencies:
   flutter_riverpod: ^2.3.7
   firebase_core: ^2.15.1
   firebase_auth: ^4.7.3
+  cloud_firestore: ^4.8.5
+  firebase_analytics: ^10.4.5
+  fluttertoast: ^8.2.2
+  firebase_database: ^10.2.5
   
 
 dev_dependencies:
