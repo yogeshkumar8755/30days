@@ -8,6 +8,7 @@ import 'package:vapp/api/Api.dart';
 import 'package:vapp/core/const.dart';
 import 'package:vapp/core/utils.dart';
 import 'package:vapp/home.dart';
+import 'package:vapp/sign_up.dart';
 import 'package:vapp/util/route.dart';
 
 class Login extends ConsumerWidget {
@@ -129,7 +130,11 @@ class Login extends ConsumerWidget {
                         },
                         child: Text("login"),
                         style: TextButton.styleFrom(minimumSize: Size(90, 40)),
-                      )
+                      ),
+
+                      TextButton(onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (c)=> SignUp()));
+                      }, child: Text("Create New Account"))
                     ],
                   ),
                 )

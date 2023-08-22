@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:vapp/core/utils.dart';
 import 'package:vapp/login_page.dart';
 
 import 'home.dart';
@@ -16,15 +17,21 @@ class SignUp extends ConsumerWidget {
     final auth = FirebaseAuth.instance;
 
     return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        title: Text(
+          "Create New Account",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: Column(
         children: [
-          Text(
-            "Create New Account",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
@@ -44,18 +51,21 @@ class SignUp extends ConsumerWidget {
           OutlinedButton(
               onPressed: () async {
                 auth
-                    .signInWithEmailAndPassword(
+                    .createUserWithEmailAndPassword(
                         email: emailController.text,
                         password: passwordController.text)
                     .then((value) {
                   if (value != null) {
+                    Utiss().flutterMsg("good");
                     Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (c) => Home(value.user!.email.toString())));
+                        .push(MaterialPageRoute(builder: (c) => Login()));
                   } else {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (c) => Login()));
                   }
-                }).onError((error, stackTrace) => null);
+                }).onError((error, stackTrace) {
+                  Utiss().flutterMsg(error.toString());
+                });
                 // await auth
                 //     .createUserWithEmailAndPassword(
                 //         email: emailController.text,
@@ -65,7 +75,13 @@ class SignUp extends ConsumerWidget {
                 //   Fluttertoast.showToast(msg: error.toString());
                 // });
               },
-              child: Text("Submit"))
+              child: Text("Submit")),
+          TextButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (c) => Login()));
+              },
+              child: Text("if you have Account"))
         ],
       ),
     );

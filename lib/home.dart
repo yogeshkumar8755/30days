@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vapp/home_detaile_page.dart';
+import 'package:vapp/isertData.dart';
 import 'package:vapp/login_page.dart';
 import 'package:vapp/model/catalog.dart';
 import 'package:vapp/util/route.dart';
@@ -15,7 +19,17 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = FirebaseAuth.instance;
+    final db = FirebaseDatabase.instance.ref("Post");
     return Scaffold(
+      appBar: AppBar(actions: [
+        IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (c) => InsertData()));
+            },
+            icon: Icon(Icons.add))
+      ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           var sharedPre = await SharedPreferences.getInstance();
@@ -28,20 +42,31 @@ class Home extends StatelessWidget {
         backgroundColor: Colors.black,
       ),
       body: SafeArea(
-        child: Container(
-          padding: Vx.m32,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              HomeHeader(id),
-              if (CatalogModel.items != null && CatalogModel.items.isEmpty)
-                Center(
-                  child: CircularProgressIndicator(),
-                )
-              else
-                CatalogList().expand()
-            ],
-          ),
+        child: Expanded(
+          child: Container(
+              padding: Vx.m32,
+              child: FirebaseAnimatedList(
+                  query: db,
+                  itemBuilder: (c, s, a, i) {
+                    return ListTile(
+                      title: Text(s.child('PName').value.toString()),
+                      leading: Text(s.child('PMore').value.toString()),
+                      trailing: CircleAvatar(),
+                    );
+                  })
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     HomeHeader(id),
+              //     if (CatalogModel.items != null && CatalogModel.items.isEmpty)
+              //       Center(
+              //         child: CircularProgressIndicator(),
+              //       )
+              //     else
+              //       CatalogList().expand()
+              //   ],
+              // ),
+              ),
         ),
       ),
     );
