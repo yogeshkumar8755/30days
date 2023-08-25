@@ -50,21 +50,21 @@ class _SpleshScreanState extends ConsumerState<SpleshScrean> {
           if (kDebugMode) {
             print(["$sto loged in"]);
           }
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => Home(sto)));
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => Home(sto)));
         } else {
           if (kDebugMode) {
             print(["plz loged in"]);
           }
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => Login()));
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => Login()));
         }
       } else {
         if (kDebugMode) {
           print(["plz loged in"]);
         }
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => Login()));
+            .pushReplacement(MaterialPageRoute(builder: (context) => Login()));
       }
     });
   }

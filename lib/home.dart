@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vapp/home_detaile_page.dart';
 import 'package:vapp/isertData.dart';
@@ -13,16 +15,20 @@ import 'package:vapp/widget/drawer.dart';
 import 'package:vapp/widget/item_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class Home extends StatelessWidget {
+import 'api/Api.dart';
+import 'model/getUserData_model.dart';
+
+class Home extends ConsumerWidget {
   String id;
   Home(this.id, {super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final auth = FirebaseAuth.instance;
+  final auth = FirebaseAuth.instance;
+  Widget build(BuildContext context, ref) {
     final db = FirebaseDatabase.instance.ref("Post");
+    final data = ref.watch(ApiProvider).getUserData();
     return Scaffold(
-      appBar: AppBar(actions: [
+      appBar: AppBar(automaticallyImplyLeading: false, actions: [
         IconButton(
             onPressed: () {
               Navigator.push(
@@ -42,31 +48,42 @@ class Home extends StatelessWidget {
         backgroundColor: Colors.black,
       ),
       body: SafeArea(
-        child: Expanded(
-          child: Container(
-              padding: Vx.m32,
-              child: FirebaseAnimatedList(
-                  query: db,
-                  itemBuilder: (c, s, a, i) {
-                    return ListTile(
-                      title: Text(s.child('PName').value.toString()),
-                      leading: Text(s.child('PMore').value.toString()),
-                      trailing: CircleAvatar(),
-                    );
-                  })
-              // Column(
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: [
-              //     HomeHeader(id),
-              //     if (CatalogModel.items != null && CatalogModel.items.isEmpty)
-              //       Center(
-              //         child: CircularProgressIndicator(),
-              //       )
-              //     else
-              //       CatalogList().expand()
-              //   ],
-              // ),
-              ),
+        child: Column(
+          children: [
+            HomeHeader(id),
+            Expanded(
+              child: Container(
+                  padding: Vx.m32,
+                  child: FutureBuilder(
+                      future: data,
+                      builder: (context, s) {
+                        return ListView.builder(
+                            itemCount: s.data?.length,
+                            itemBuilder: (c, i) {
+                              var allUserData = s.data?[i];
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  child: Text("${allUserData?.id}"),
+                                ),
+                                title: Text("${allUserData?.title}"),
+                              );
+                            });
+                      })
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     HomeHeader(id),
+                  //     if (CatalogModel.items != null && CatalogModel.items.isEmpty)
+                  //       Center(
+                  //         child: CircularProgressIndicator(),
+                  //       )
+                  //     else
+                  //       CatalogList().expand()
+                  //   ],
+                  // ),
+                  ),
+            ),
+          ],
         ),
       ),
     );
